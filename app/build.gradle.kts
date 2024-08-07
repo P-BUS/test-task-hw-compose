@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.test_task_hw"
+    namespace = "com.books.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.test_task_hw"
+        applicationId = "com.books.app"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
@@ -74,11 +74,13 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.0-beta06")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     // DI
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
+
     // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-config")

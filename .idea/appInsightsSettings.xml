@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AppInsightsSettings">
+    <option name="selectedTabId" value="Firebase Crashlytics" />
     <option name="tabSettings">
       <map>
         <entry key="Firebase Crashlytics">
@@ -8,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.books.app" />
+                  <option name="mobileSdkAppId" value="1:161428970931:android:8d66b60990bb62ba15bfc6" />
+                  <option name="projectId" value="book-app-cc0a8" />
+                  <option name="projectNumber" value="161428970931" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
