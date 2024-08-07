@@ -6,6 +6,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.example.test_task_hw.presentation.screens.details.DetailsScreen
 import com.example.test_task_hw.presentation.screens.home.HomeScreen
 import com.example.test_task_hw.presentation.screens.splash.SplashScreen

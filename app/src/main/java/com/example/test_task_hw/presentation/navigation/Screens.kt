@@ -5,7 +5,9 @@ import kotlinx.serialization.Serializable
 // Types
 @Serializable
 object Splash
+
 @Serializable
 object Home
+
 @Serializable
-object Details
+data class Details(val id: String)
