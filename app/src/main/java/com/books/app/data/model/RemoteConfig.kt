@@ -1,5 +1,47 @@
 package com.books.app.data.model
+import kotlinx.serialization.Serializable
 
+import kotlinx.serialization.SerialName
+
+
+@Serializable
 data class RemoteConfig(
-    val books: List<String>
+    @SerialName("books")
+    val books: List<Book>,
+    @SerialName("top_banner_slides")
+    val topBannerSlides: List<TopBannerSlide>,
+    @SerialName("you_will_like_section")
+    val youWillLikeSection: List<Int>
+)
+
+@Serializable
+data class Book(
+    @SerialName("author")
+    val author: String,
+    @SerialName("cover_url")
+    val coverUrl: String,
+    @SerialName("genre")
+    val genre: String,
+    @SerialName("id")
+    val id: Int,
+    @SerialName("likes")
+    val likes: String,
+    @SerialName("name")
+    val name: String,
+    @SerialName("quotes")
+    val quotes: String,
+    @SerialName("summary")
+    val summary: String,
+    @SerialName("views")
+    val views: String
+)
+
+@Serializable
+data class TopBannerSlide(
+    @SerialName("book_id")
+    val bookId: Int,
+    @SerialName("cover")
+    val cover: String,
+    @SerialName("id")
+    val id: Int
 )
