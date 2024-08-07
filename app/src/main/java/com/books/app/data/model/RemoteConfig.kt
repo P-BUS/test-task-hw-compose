@@ -7,11 +7,11 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class RemoteConfig(
     @SerialName("books")
-    val books: List<Book>,
+    val books: List<Book> = emptyList(),
     @SerialName("top_banner_slides")
-    val topBannerSlides: List<TopBannerSlide>,
+    val topBannerSlides: List<TopBannerSlide> = emptyList(),
     @SerialName("you_will_like_section")
-    val youWillLikeSection: List<Int>
+    val youWillLikeSection: List<Int> = emptyList()
 )
 
 @Serializable

@@ -11,12 +11,6 @@ class SplashViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        configAPI.fetchConfig {
-            it?.let {
-                val config = it
-                config
-            }
-        }
+        configAPI.fetchConfig()
     }
-
 }
