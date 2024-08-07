@@ -11,6 +11,6 @@ class SplashViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        configAPI.fetchConfig()
+        configAPI.loadConfig()
     }
 }

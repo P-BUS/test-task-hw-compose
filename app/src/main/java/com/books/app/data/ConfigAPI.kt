@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface ConfigAPI {
     val config: StateFlow<RemoteConfig>
-    fun fetchConfig()
+    fun loadConfig()
 }

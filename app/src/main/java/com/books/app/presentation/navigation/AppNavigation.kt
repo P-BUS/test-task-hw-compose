@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.books.app.presentation.screens.details.DetailsScreen
 import com.books.app.presentation.screens.home.HomeScreen
+import com.books.app.presentation.screens.home.HomeViewModel
 import com.books.app.presentation.screens.splash.SplashScreen
 import com.books.app.presentation.screens.splash.SplashViewModel
 
@@ -26,11 +27,15 @@ fun AppNavigation(
         composable<Splash> {
             val splashViewModel = hiltViewModel<SplashViewModel>()
             SplashScreen(
+                navController = navController,
                 viewModel = splashViewModel
             )
         }
         composable<Home> {
-            HomeScreen( /* ... */)
+            val homeViewModel = hiltViewModel<HomeViewModel>()
+            HomeScreen(
+                viewModel = homeViewModel
+            )
         }
         composable<Details> {
             DetailsScreen( /* ... */)
