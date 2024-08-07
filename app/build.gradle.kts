@@ -79,6 +79,9 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.44")
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-config")
 }
 // Allow references to generated code
 kapt {
