@@ -9,6 +9,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import javax.inject.Singleton
 
 @Module
@@ -18,8 +21,15 @@ object AppModule {
     @Singleton
     fun provideFirebaseRemoteConfig(): FirebaseRemoteConfig = Firebase.remoteConfig.apply {
         val settings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = if (BuildConfig.DEBUG) 0 else 3600
+            minimumFetchIntervalInSeconds =
+                if (BuildConfig.DEBUG) 0 else 0 // TODO: change not debug time
         }
         setConfigSettingsAsync(settings)
+    }
+
+    @Provides
+    @Singleton
+    fun provideExternalScope(): CoroutineScope {
+        return CoroutineScope(Job() + Dispatchers.Default)
     }
 }

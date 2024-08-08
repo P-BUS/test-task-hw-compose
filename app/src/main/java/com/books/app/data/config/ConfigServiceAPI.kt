@@ -1,9 +1,9 @@
-package com.books.app.data
+package com.books.app.data.config
 
 import com.books.app.data.model.RemoteConfig
 import kotlinx.coroutines.flow.StateFlow
 
-interface ConfigAPI {
+interface ConfigServiceAPI {
+    suspend fun loadConfig()
     val config: StateFlow<RemoteConfig>
-    fun loadConfig()
 }

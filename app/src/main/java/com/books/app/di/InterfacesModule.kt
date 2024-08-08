@@ -1,7 +1,7 @@
 package com.books.app.di
 
-import com.books.app.data.ConfigAPI
-import com.books.app.data.ConfigApiImpl
+import com.books.app.data.config.ConfigServiceAPI
+import com.books.app.data.config.ConfigService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,6 +14,6 @@ abstract class InterfacesModule {
     @Binds
     @Singleton
     abstract fun bindConfigAPI(
-        configAPIImpl: ConfigApiImpl,
-    ): ConfigAPI
+        configServiceImpl: ConfigService,
+    ): ConfigServiceAPI
 }

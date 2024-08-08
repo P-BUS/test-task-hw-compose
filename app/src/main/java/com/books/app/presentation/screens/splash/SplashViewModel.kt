@@ -1,16 +1,20 @@
 package com.books.app.presentation.screens.splash
 
 import androidx.lifecycle.ViewModel
-import com.books.app.data.ConfigAPI
+import androidx.lifecycle.viewModelScope
+import com.books.app.data.config.ConfigServiceAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    configAPI: ConfigAPI
+    private val configServiceAPI: ConfigServiceAPI
 ) : ViewModel() {
 
-    init {
-        configAPI.loadConfig()
+    suspend fun loadConfig() {
+        viewModelScope.launch {
+            configServiceAPI.loadConfig()
+        }
     }
 }

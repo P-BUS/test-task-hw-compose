@@ -15,15 +15,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun HomeScreen(
     viewModel: HomeViewModel
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.updateConfig()
-    }
+
     val uiState by viewModel.config.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn {
-            items(uiState.books) {
+            items(uiState?.books ?: emptyList()) {
                 Text(text = it.genre)
             }
         }

@@ -16,6 +16,9 @@ fun SplashScreen(
     navController: NavController
 ) {
     LaunchedEffect(Unit) {
+        viewModel.loadConfig()
+    }
+    LaunchedEffect(Unit) {
         delay(2000)
         navController.navigate(Home)
     }
