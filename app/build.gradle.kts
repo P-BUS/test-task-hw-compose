@@ -81,9 +81,13 @@ dependencies {
 
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-config")
+
+    // Image loader
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }
 // Allow references to generated code
 kapt {

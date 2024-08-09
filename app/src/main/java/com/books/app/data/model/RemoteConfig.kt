@@ -1,8 +1,7 @@
 package com.books.app.data.model
-import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
-
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteConfig(
@@ -17,23 +16,23 @@ data class RemoteConfig(
 @Serializable
 data class Book(
     @SerialName("author")
-    val author: String = "",
+    val author: String,
     @SerialName("cover_url")
-    val coverUrl: String = "",
+    val coverUrl: String,
     @SerialName("genre")
-    val genre: String = "",
+    val genre: String,
     @SerialName("id")
-    val id: Int = 0,
+    val id: Int,
     @SerialName("likes")
-    val likes: String = "",
+    val likes: String,
     @SerialName("name")
-    val name: String = "",
+    val name: String,
     @SerialName("quotes")
-    val quotes: String = "",
+    val quotes: String,
     @SerialName("summary")
-    val summary: String = "",
+    val summary: String,
     @SerialName("views")
-    val views: String = ""
+    val views: String
 )
 
 @Serializable
