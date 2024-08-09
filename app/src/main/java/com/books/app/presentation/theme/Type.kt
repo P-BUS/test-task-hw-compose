@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.sp
 import com.books.app.R
 
 val NunitoSans = FontFamily(
-    Font(R.font.nunitosans_italic, FontWeight.Normal),
-    Font(R.font.nunitosans_italic, FontWeight.SemiBold)
+    Font(R.font.nunitosans_variable, FontWeight.Normal),
+    Font(R.font.nunitosans_variable, FontWeight.SemiBold)
 )
 
 // Set of Material typography styles to start with

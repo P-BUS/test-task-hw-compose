@@ -10,4 +10,4 @@ object Splash
 object Home
 
 @Serializable
-data class Details(val id: String)
+data class Details(val id: Int)

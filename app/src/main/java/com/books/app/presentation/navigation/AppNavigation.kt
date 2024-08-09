@@ -27,14 +27,19 @@ fun AppNavigation(
         composable<Splash> {
             val splashViewModel = hiltViewModel<SplashViewModel>()
             SplashScreen(
-                navController = navController,
-                viewModel = splashViewModel
+                viewModel = splashViewModel,
+                navigateHome = {
+                    navController.navigate(Home)
+                }
             )
         }
         composable<Home> {
             val homeViewModel = hiltViewModel<HomeViewModel>()
             HomeScreen(
-                viewModel = homeViewModel
+                viewModel = homeViewModel,
+                goToDetails = { bookId ->
+                    navController.navigate(Details(bookId))
+                }
             )
         }
         composable<Details> {

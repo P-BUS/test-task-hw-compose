@@ -17,14 +17,14 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(
     viewModel: SplashViewModel,
-    navController: NavController
+    navigateHome: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         viewModel.loadConfig()
     }
     LaunchedEffect(Unit) {
         delay(2000)
-        navController.navigate(Home)
+        navigateHome()
     }
     Box(
         modifier = Modifier.fillMaxSize()
