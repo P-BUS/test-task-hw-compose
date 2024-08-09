@@ -8,7 +8,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.books.app.presentation.screens.details.DetailsScreen
+import com.books.app.presentation.screens.details.DetailsViewModel
 import com.books.app.presentation.screens.home.HomeScreen
 import com.books.app.presentation.screens.home.HomeViewModel
 import com.books.app.presentation.screens.splash.SplashScreen
@@ -28,7 +30,7 @@ fun AppNavigation(
             val splashViewModel = hiltViewModel<SplashViewModel>()
             SplashScreen(
                 viewModel = splashViewModel,
-                navigateHome = {
+                navigateToHome = {
                     navController.navigate(Home)
                 }
             )
@@ -37,13 +39,19 @@ fun AppNavigation(
             val homeViewModel = hiltViewModel<HomeViewModel>()
             HomeScreen(
                 viewModel = homeViewModel,
-                goToDetails = { bookId ->
+                navigateToDetails = { bookId ->
                     navController.navigate(Details(bookId))
                 }
             )
         }
-        composable<Details> {
-            DetailsScreen( /* ... */)
+        composable<Details> { backStackEntry ->
+            val detailsViewModel = hiltViewModel<DetailsViewModel>()
+            val details: Details = backStackEntry.toRoute()
+            DetailsScreen(
+                viewModel = detailsViewModel,
+                bookId = details.id,
+                navigateBack = { navController.popBackStack() }
+            )
         }
     }
 }

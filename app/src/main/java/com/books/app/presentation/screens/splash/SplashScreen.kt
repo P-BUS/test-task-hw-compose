@@ -9,22 +9,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavController
 import com.books.app.R
-import com.books.app.presentation.navigation.Home
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
     viewModel: SplashViewModel,
-    navigateHome: () -> Unit,
+    navigateToHome: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         viewModel.loadConfig()
     }
     LaunchedEffect(Unit) {
         delay(2000)
-        navigateHome()
+        navigateToHome()
     }
     Box(
         modifier = Modifier.fillMaxSize()

@@ -32,13 +32,13 @@ import com.books.app.presentation.theme.TransparentLight70
 
 @Composable
 fun HomeScreen(
-    goToDetails: (Int) -> Unit,
+    navigateToDetails: (Int) -> Unit,
     viewModel: HomeViewModel
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(uiState.navigationAction) {
         when (val action = uiState.navigationAction) {
-            is NavigationAction.NavigateToDetails -> goToDetails(action.id)
+            is NavigationAction.NavigateToDetails -> navigateToDetails(action.id)
             else -> {}
         }
     }
