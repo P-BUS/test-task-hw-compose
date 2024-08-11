@@ -45,17 +45,14 @@ fun PagerDotIndicators(
     ) {
         repeat(pageCount) { currentPageIndicator ->
             val isSelected = currentPageIndicator == currentPageIndex
-            val color = if (isSelected) {
-                Color.Red
-            } else {
-                Color.White
-            }
+            val color = if (isSelected) Color.Red else Color.White
             Box(
                 modifier = Modifier
-                    .size(8.dp)
-                    .background(color)
                     .padding(end = 4.dp)
+                    .size(8.dp)
                     .clip(CircleShape)
+                    .background(color)
+
             )
         }
     }
