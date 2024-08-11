@@ -1,5 +1,7 @@
 package com.books.app.presentation.screens.home
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -36,6 +38,7 @@ import com.books.app.data.model.TopBannerSlide
 import com.books.app.presentation.navigation.NavigationAction
 import com.books.app.presentation.theme.NunitoSans
 import com.books.app.presentation.theme.TransparentLight70
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -78,6 +81,21 @@ fun BannerSlider(
     bannerSlides: List<TopBannerSlide>
 ) {
     val pagerState = rememberPagerState(pageCount = bannerSlides::size)
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(3000)
+            with(pagerState) {
+                val targetPage = if (canScrollForward) currentPage + 1 else 0
+                animateScrollToPage(
+                    page = targetPage,
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = FastOutSlowInEasing
+                    )
+                )
+            }
+        }
+    }
     Box() {
         HorizontalPager(state = pagerState) { pageIndex ->
             SliderCard(
