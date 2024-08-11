@@ -40,7 +40,7 @@ class DetailsViewModel @Inject constructor(
         _sortedBooks,
         _isLoading,
         _error,
-        _navigationAction
+        _navigationAction,
     ) { sortedBooks, isLoading, error, navigationAction ->
         DetailsUiState(
             isLoading = isLoading,
