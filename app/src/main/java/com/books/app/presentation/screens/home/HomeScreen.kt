@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -55,9 +56,13 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Color.Black)
+            .statusBarsPadding(),
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
     ) {
+        item {
+            Text(text = "Library")
+        }
         item {
             BannerSlider(uiState.bannerSlides)
         }
@@ -96,7 +101,7 @@ fun BannerSlider(
             }
         }
     }
-    Box() {
+    Box {
         HorizontalPager(state = pagerState) { pageIndex ->
             SliderCard(
                 imageUrl = bannerSlides[pageIndex].cover
