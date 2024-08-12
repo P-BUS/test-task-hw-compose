@@ -24,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +43,8 @@ import com.books.app.presentation.navigation.NavigationAction
 import com.books.app.presentation.theme.NunitoSans
 import com.books.app.presentation.theme.TransparentLight70
 import kotlinx.coroutines.delay
+
+private const val DELAY_TIME = 3000L
 
 @Composable
 fun HomeScreen(
@@ -85,12 +90,17 @@ fun HomeScreen(
 fun BannerSlider(
     bannerSlides: List<TopBannerSlide>
 ) {
-    val pagerState = rememberPagerState(pageCount = bannerSlides::size)
+    val fakeListSize = 1000
+    val initialPage = fakeListSize / 2
+    val pagerState = rememberPagerState(
+        pageCount = { fakeListSize },
+        initialPage = initialPage
+    )
     LaunchedEffect(Unit) {
         while (true) {
-            delay(3000)
             with(pagerState) {
                 val targetPage = if (canScrollForward) currentPage + 1 else 0
+                delay(DELAY_TIME)
                 animateScrollToPage(
                     page = targetPage,
                     animationSpec = tween(
@@ -102,14 +112,22 @@ fun BannerSlider(
         }
     }
     Box {
-        HorizontalPager(state = pagerState) { pageIndex ->
-            SliderCard(
-                imageUrl = bannerSlides[pageIndex].cover
-            )
+        var actualPageIndex by remember { mutableIntStateOf(0) }
+        HorizontalPager(
+            state = pagerState,
+            pageSpacing = 16.dp
+        ) { pageIndex ->
+            if (bannerSlides.isNotEmpty()) {
+                val index = pageIndex % bannerSlides.size
+                actualPageIndex = index
+                SliderCard(
+                    imageUrl = bannerSlides[index].cover
+                )
+            }
         }
         PagerDotIndicators(
-            pageCount = pagerState.pageCount,
-            currentPageIndex = pagerState.currentPage,
+            pageCount = bannerSlides.size,
+            currentPageIndex = actualPageIndex,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 8.dp),
