@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.books.app.data.model.Book
 import com.books.app.data.model.TopBannerSlide
-import com.books.app.domain.GetBooksStreamUseCase
+import com.books.app.domain.GetSortedBooksStreamUseCase
 import com.books.app.domain.GetTopBannerStreamUseCase
 import com.books.app.presentation.navigation.NavigationAction
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,10 +32,10 @@ sealed class HomeAction {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    getBooksStreamUseCase: GetBooksStreamUseCase,
+    getSortedBooksStreamUseCase: GetSortedBooksStreamUseCase,
     getTopBannerStreamUseCase: GetTopBannerStreamUseCase,
 ) : ViewModel() {
-    private val _sortedBooks = getBooksStreamUseCase()
+    private val _sortedBooks = getSortedBooksStreamUseCase()
     private val _bannerSlides = getTopBannerStreamUseCase()
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow(null)

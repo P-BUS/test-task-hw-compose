@@ -20,7 +20,7 @@ import coil.request.ImageRequest
 @Composable
 fun BaseImage(
     url: String,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     AsyncImage(
         model = ImageRequest.Builder(context = LocalContext.current)

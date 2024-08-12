@@ -48,6 +48,7 @@ class ConfigService @Inject constructor(
         }
         awaitClose { }
     }
+
     // TODO: to add addOnConfigUpdateListener to listen the updates in real time
     companion object {
         private const val HOME_BOOKS_KEY = "json_data"

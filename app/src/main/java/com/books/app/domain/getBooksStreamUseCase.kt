@@ -6,13 +6,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetBooksStreamUseCase @Inject constructor(
+class GetBooksByIdStreamUseCase @Inject constructor(
     private val configServiceApi: ConfigServiceAPI
 ) {
-    operator fun invoke(): Flow<Map<String, List<Book>>> = flow {
-        val sortedBooks = configServiceApi.config.value
-            .books
-            .groupBy { it.genre }
-        emit(sortedBooks)
+    operator fun invoke(bookId: Int): Flow<List<Book>> = flow {
+        val allBooks = configServiceApi.config.value.books
+        val book = allBooks.find { it.id == bookId }
+        val updatedBooks = if (book != null) {
+            listOf(book) + allBooks.filterNot { it == book }
+        } else {
+            allBooks
+        }
+        emit(updatedBooks)
     }
 }
