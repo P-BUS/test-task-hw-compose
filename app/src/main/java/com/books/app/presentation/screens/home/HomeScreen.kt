@@ -69,7 +69,12 @@ fun HomeScreen(
             Text(text = "Library")
         }
         item {
-            BannerSlider(uiState.bannerSlides)
+            BannerSlider(
+                bannerSlides = uiState.bannerSlides,
+                onCardClick = { bookId ->
+                    viewModel.send(HomeAction.OnBookClick(bookId))
+                }
+            )
         }
 
         uiState.sortedBooks.forEach { sortedBook ->
@@ -88,7 +93,8 @@ fun HomeScreen(
 
 @Composable
 fun BannerSlider(
-    bannerSlides: List<TopBannerSlide>
+    bannerSlides: List<TopBannerSlide>,
+    onCardClick: (Int) -> Unit
 ) {
     val fakeListSize = 1000
     val initialPage = fakeListSize / 2
@@ -120,8 +126,11 @@ fun BannerSlider(
             if (bannerSlides.isNotEmpty()) {
                 val index = pageIndex % bannerSlides.size
                 actualPageIndex = index
+                val item = bannerSlides[index]
                 SliderCard(
-                    imageUrl = bannerSlides[index].cover
+                    imageUrl = item.cover,
+                    bookId = item.bookId,
+                    onCardClick = onCardClick
                 )
             }
         }
@@ -138,10 +147,13 @@ fun BannerSlider(
 @Composable
 fun SliderCard(
     imageUrl: String,
+    bookId: Int,
+    onCardClick: (Int) -> Unit
 ) {
     BaseImage(
         url = imageUrl,
         modifier = Modifier
+            .clickable { onCardClick(bookId) }
             .height(160.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
