@@ -21,6 +21,7 @@ import javax.inject.Inject
 data class DetailsUiState(
     val isLoading: Boolean = true,
     val books: List<Book> = emptyList(),
+    val likeBooks: List<Book> = emptyList(),
     val error: String? = null,
     val navigationAction: NavigationAction = NavigationAction.None
 )
