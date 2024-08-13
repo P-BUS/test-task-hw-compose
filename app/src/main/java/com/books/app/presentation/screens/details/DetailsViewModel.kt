@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.books.app.data.model.Book
 import com.books.app.domain.GetBooksByIdStreamUseCase
+import com.books.app.domain.GetLikedBooksStreamUseCase
 import com.books.app.presentation.navigation.NavigationAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ import javax.inject.Inject
 data class DetailsUiState(
     val isLoading: Boolean = true,
     val books: List<Book> = emptyList(),
+    val likedBooks: List<Book> = emptyList(),
     val likeBooks: List<Book> = emptyList(),
     val error: String? = null,
     val navigationAction: NavigationAction = NavigationAction.None
@@ -33,21 +35,25 @@ sealed class DetailsAction {
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     private val getBooksByIdStreamUseCase: GetBooksByIdStreamUseCase,
+    getLikedBooksStreamUseCase: GetLikedBooksStreamUseCase
 ) : ViewModel() {
     private val _books = MutableStateFlow<List<Book>>(emptyList())
+    private val _likedBooks = getLikedBooksStreamUseCase()
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow(null)
     private val _navigationAction =
         MutableStateFlow<NavigationAction>(NavigationAction.None) // simple solution to not create more complex navigation with manager
     val uiState: StateFlow<DetailsUiState> = combine(
         _books,
+        _likedBooks,
         _isLoading,
         _error,
         _navigationAction,
-    ) { books, isLoading, error, navigationAction ->
+    ) { books, likedBooks, isLoading, error, navigationAction ->
         DetailsUiState(
             isLoading = isLoading,
             books = books,
+            likedBooks = likedBooks,
             error = error,
             navigationAction = navigationAction,
         )

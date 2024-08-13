@@ -128,7 +128,7 @@ fun DetailsScreen(
                 BaseHorizontalDivider(color = Grey)
                 HorizontalCarousel(
                     title = "You will also like",
-                    books = emptyList(),
+                    books = uiState.likeBooks,
                     onCardClick = {})
                 OutlinedButton(onClick = { /*TODO*/ }) {
                     Text(text = "Read now")
