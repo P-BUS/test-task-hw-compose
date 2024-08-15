@@ -1,11 +1,12 @@
 package com.books.app.presentation.screens.details
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -30,12 +31,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.books.app.R
@@ -54,8 +57,10 @@ fun DetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutine = rememberCoroutineScope()
+    val configuration = LocalConfiguration.current
     val pagerState = rememberPagerState { uiState.books.size }
-    val bottomSheetHeight = (LocalConfiguration.current.screenHeightDp / 2).dp
+    val pagerHorizontalPadding: Dp = (configuration.screenWidthDp.dp - 200.dp) / 2
+    val bottomSheetHeight = (configuration.screenHeightDp / 2).dp
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = SheetState(
             skipPartiallyExpanded = false,
@@ -102,16 +107,17 @@ fun DetailsScreen(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier,
-            pageSize = PageSize.Fixed(120.dp),
+            contentPadding = PaddingValues(horizontal = pagerHorizontalPadding),
             pageSpacing = 8.dp,
-            beyondViewportPageCount = 1,
+            pageSize = PageSize.Fixed(pageSize = 200.dp),
+
         ) { pageIndex ->
             val pageOffset by remember {
                 derivedStateOf {
                     pagerState.currentPageOffsetFraction + (pagerState.currentPage - pageIndex)
                 }
             }
-            val scaleFactor = 1f - (abs(pageOffset) * 0.25f).coerceIn(0f, 0.25f)
+            val scaleFactor = 1f - (abs(pageOffset) * 0.2f).coerceIn(0f, 0.2f)
             val imageSize by animateFloatAsState(
                 targetValue = scaleFactor,
                 label = "carousel_size_animation"
@@ -129,6 +135,7 @@ fun DetailsScreen(
             )
         }
         BottomSheetScaffold(
+            modifier = Modifier.weight(1f),
             scaffoldState = sheetState,
             sheetDragHandle = null,
             sheetPeekHeight = bottomSheetHeight,

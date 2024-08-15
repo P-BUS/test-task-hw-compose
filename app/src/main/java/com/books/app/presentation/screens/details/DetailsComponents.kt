@@ -3,7 +3,6 @@ package com.books.app.presentation.screens.details
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -18,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.books.app.presentation.screens.home.BaseImage
 
@@ -29,18 +29,30 @@ fun HeaderCarouselCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .width(200.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BaseImage(
             url = imageUrl,
             modifier = Modifier
                 .height(250.dp)
-                .width(200.dp)
                 .clip(RoundedCornerShape(8.dp))
         )
-        Text(text = bookName, color = Color.White, textAlign = TextAlign.Center)
-        Text(text = author, color = Color.White, textAlign = TextAlign.Center)
+        Text(
+            text = bookName,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = author,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -51,7 +63,7 @@ fun BaseHorizontalDivider(
     Divider(
         modifier = Modifier.fillMaxWidth(),
         thickness = 1.dp,
-        color = Color.White
+        color = color
     )
 }
 
