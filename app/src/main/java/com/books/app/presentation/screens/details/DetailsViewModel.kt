@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,13 +22,13 @@ data class DetailsUiState(
     val isLoading: Boolean = true,
     val books: List<Book> = emptyList(),
     val likedBooks: List<Book> = emptyList(),
-    val likeBooks: List<Book> = emptyList(),
     val error: String? = null,
     val navigationAction: NavigationAction = NavigationAction.None
 )
 
 sealed class DetailsAction {
     data class OnReadClick(val bookId: Int) : DetailsAction()
+    data class OnBookSelected(val bookId: Int) : DetailsAction()
 }
 
 @HiltViewModel
@@ -64,16 +63,17 @@ class DetailsViewModel @Inject constructor(
     )
     val send: (DetailsAction) -> Unit = { action ->
         when (action) {
+            is DetailsAction.OnBookSelected -> updateBooksById(action.bookId)
             is DetailsAction.OnReadClick -> _navigationAction.update {
                 NavigationAction.NavigateToRead(action.bookId)
             }
         }
     }
 
-    fun updateBooksById(bookId: Int) {
+    private fun updateBooksById(bookId: Int) {
         viewModelScope.launch {
-            _books.update {
-                getBooksByIdStreamUseCase(bookId).first()
+            getBooksByIdStreamUseCase(bookId).collect { books ->
+                _books.update { books }
             }
         }
     }

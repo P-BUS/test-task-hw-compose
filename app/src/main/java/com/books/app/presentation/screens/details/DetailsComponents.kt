@@ -3,8 +3,10 @@ package com.books.app.presentation.screens.details
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
@@ -24,10 +26,10 @@ fun HeaderCarouselCard(
     imageUrl: String,
     bookName: String,
     author: String,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
-            .width(200.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BaseImage(
@@ -64,6 +66,8 @@ fun DetailsDescriptionElement(
             Text(text = detailInfo)
             imageId?.let { resourceId ->
                 Image(
+                    modifier = Modifier
+                        .size(20.dp),
                     painter = painterResource(resourceId),
                     contentDescription = null
                 )

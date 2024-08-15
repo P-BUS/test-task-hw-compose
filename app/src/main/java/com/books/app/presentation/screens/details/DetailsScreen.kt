@@ -1,10 +1,13 @@
 package com.books.app.presentation.screens.details
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,21 +24,26 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.books.app.R
 import com.books.app.data.model.Book
 import com.books.app.presentation.screens.home.HorizontalCarousel
 import com.books.app.presentation.theme.Grey
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,11 +53,9 @@ fun DetailsScreen(
     navigateBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var itemIndex by remember { mutableIntStateOf(0) }
-    val books by remember { mutableStateOf(uiState.books) }
-    var item by remember { mutableStateOf(Book()) }
+    val coroutine = rememberCoroutineScope()
+    val pagerState = rememberPagerState { uiState.books.size }
     val bottomSheetHeight = (LocalConfiguration.current.screenHeightDp / 2).dp
-    val pagerState = rememberPagerState { books.size }
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = SheetState(
             skipPartiallyExpanded = false,
@@ -57,15 +63,16 @@ fun DetailsScreen(
             skipHiddenState = true
         )
     )
+    var item by remember { mutableStateOf(Book()) }
 
     LaunchedEffect(Unit) {
         // TODO: to move param getting to viewModel with savedStateHandle
-        viewModel.updateBooksById(bookId)
+        viewModel.send(DetailsAction.OnBookSelected(bookId))
     }
-
-    LaunchedEffect(itemIndex) {
+    LaunchedEffect(key1 = pagerState.currentPage, key2 = uiState.books) {
+        val books = uiState.books
         if (books.isNotEmpty()) {
-            item = books[itemIndex]
+            item = books[pagerState.currentPage]
         }
     }
 
@@ -94,11 +101,32 @@ fun DetailsScreen(
         )
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) { page ->
-            itemIndex = page
-            HeaderCarouselCard(item.coverUrl, item.name, item.author)
+            modifier = Modifier,
+            pageSize = PageSize.Fixed(120.dp),
+            pageSpacing = 8.dp,
+            beyondViewportPageCount = 1,
+        ) { pageIndex ->
+            val pageOffset by remember {
+                derivedStateOf {
+                    pagerState.currentPageOffsetFraction + (pagerState.currentPage - pageIndex)
+                }
+            }
+            val scaleFactor = 1f - (abs(pageOffset) * 0.25f).coerceIn(0f, 0.25f)
+            val imageSize by animateFloatAsState(
+                targetValue = scaleFactor,
+                label = "carousel_size_animation"
+            )
+            val book = uiState.books[pageIndex]
+            HeaderCarouselCard(
+                imageUrl = book.coverUrl,
+                bookName = book.name,
+                author = book.author,
+                modifier = Modifier
+                    .graphicsLayer {
+                        scaleX = imageSize
+                        scaleY = imageSize
+                    }
+            )
         }
         BottomSheetScaffold(
             scaffoldState = sheetState,
@@ -123,13 +151,22 @@ fun DetailsScreen(
                 BaseHorizontalDivider(color = Grey)
                 Column {
                     Text(text = "Summary")
-                    Text(text = item.summary)
+                    Text(
+                        text = item.summary,
+                        maxLines = 5,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
                 BaseHorizontalDivider(color = Grey)
                 HorizontalCarousel(
                     title = "You will also like",
-                    books = uiState.likeBooks,
-                    onCardClick = {})
+                    books = uiState.likedBooks,
+                    onCardClick = { bookId ->
+                        coroutine.launch {
+                            pagerState.scrollToPage(bookId)
+                        }
+                    }
+                )
                 OutlinedButton(onClick = { /*TODO*/ }) {
                     Text(text = "Read now")
                 }
