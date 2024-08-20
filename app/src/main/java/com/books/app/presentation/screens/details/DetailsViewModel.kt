@@ -27,17 +27,18 @@ data class DetailsUiState(
 )
 
 sealed class DetailsAction {
-    data class OnReadClick(val bookId: Int) : DetailsAction()
+    data class InitialLoading(val bookId: Int) : DetailsAction()
     data class OnBookSelected(val bookId: Int) : DetailsAction()
+    data class OnReadClick(val bookId: Int) : DetailsAction()
 }
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     private val getBooksByIdStreamUseCase: GetBooksByIdStreamUseCase,
-    getLikedBooksStreamUseCase: GetLikedBooksStreamUseCase
+    private val getLikedBooksStreamUseCase: GetLikedBooksStreamUseCase,
 ) : ViewModel() {
     private val _books = MutableStateFlow<List<Book>>(emptyList())
-    private val _likedBooks = getLikedBooksStreamUseCase()
+    private val _likedBooks = MutableStateFlow<List<Book>>(emptyList())
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow(null)
     private val _navigationAction =
@@ -50,8 +51,8 @@ class DetailsViewModel @Inject constructor(
         _navigationAction,
     ) { books, likedBooks, isLoading, error, navigationAction ->
         DetailsUiState(
-            isLoading = isLoading,
             books = books,
+            isLoading = isLoading,
             likedBooks = likedBooks,
             error = error,
             navigationAction = navigationAction,
@@ -63,6 +64,11 @@ class DetailsViewModel @Inject constructor(
     )
     val send: (DetailsAction) -> Unit = { action ->
         when (action) {
+            is DetailsAction.InitialLoading -> {
+                updateBooksById(action.bookId)
+                updateLikedBooks()
+            }
+
             is DetailsAction.OnBookSelected -> updateBooksById(action.bookId)
             is DetailsAction.OnReadClick -> _navigationAction.update {
                 NavigationAction.NavigateToRead(action.bookId)
@@ -72,8 +78,18 @@ class DetailsViewModel @Inject constructor(
 
     private fun updateBooksById(bookId: Int) {
         viewModelScope.launch {
+            _isLoading.update { true }
             getBooksByIdStreamUseCase(bookId).collect { books ->
                 _books.update { books }
+                if (books.isNotEmpty()) _isLoading.update { false }
+            }
+        }
+    }
+
+    private fun updateLikedBooks() {
+        viewModelScope.launch {
+            getLikedBooksStreamUseCase().collect { books ->
+                _likedBooks.update { books }
             }
         }
     }

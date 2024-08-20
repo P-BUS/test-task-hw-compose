@@ -2,11 +2,12 @@ package com.books.app.presentation.screens.details
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -37,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,9 +56,42 @@ fun DetailsScreen(
     navigateBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val coroutine = rememberCoroutineScope()
+    val sendEvent: (DetailsAction) -> Unit = viewModel.send
+
+    LaunchedEffect(Unit) {
+        viewModel.send(DetailsAction.InitialLoading(bookId))
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        if (uiState.isLoading) {
+            LoadingState()
+        } else {
+            DetailsLayout(
+                books = uiState.books,
+                likedBooks = uiState.likedBooks,
+                booksSize = uiState.books.size,
+                navigateBack = navigateBack,
+                sendEvent = sendEvent,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailsLayout(
+    books: List<Book>,
+    likedBooks: List<Book>,
+    booksSize: Int,
+    navigateBack: () -> Unit,
+    sendEvent: (DetailsAction) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
-    val pagerState = rememberPagerState { uiState.books.size }
+    val pagerState = rememberPagerState { booksSize }
     val pagerHorizontalPadding: Dp = (configuration.screenWidthDp.dp - 200.dp) / 2
     val bottomSheetHeight = (configuration.screenHeightDp / 2).dp
     val sheetState = rememberBottomSheetScaffoldState(
@@ -70,75 +103,79 @@ fun DetailsScreen(
     )
     var item by remember { mutableStateOf(Book()) }
 
-    LaunchedEffect(Unit) {
-        // TODO: to move param getting to viewModel with savedStateHandle
-        viewModel.send(DetailsAction.OnBookSelected(bookId))
-    }
-    LaunchedEffect(key1 = pagerState.currentPage, key2 = uiState.books) {
-        val books = uiState.books
-        if (books.isNotEmpty()) {
-            item = books[pagerState.currentPage]
-        }
+    LaunchedEffect(key1 = pagerState.currentPage) {
+        item = books[pagerState.currentPage]
     }
 
-    Column(Modifier.background(Color.Black)) {
-        TopAppBar(
-            title = { /*TODO*/ },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                scrolledContainerColor = Color.Transparent,
-                navigationIconContentColor = Color.White,
-                titleContentColor = Color.White,
-                actionIconContentColor = Color.White
-            ),
-            navigationIcon = {
-                IconButton(
-                    onClick = navigateBack,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = Color.White
-                    )
-                ) {
-                    Icons.Default.ArrowBack
-                }
-            },
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black)
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-        )
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier,
-            contentPadding = PaddingValues(horizontal = pagerHorizontalPadding),
-            pageSpacing = 8.dp,
-            pageSize = PageSize.Fixed(pageSize = 200.dp),
-
-        ) { pageIndex ->
-            val pageOffset by remember {
-                derivedStateOf {
-                    pagerState.currentPageOffsetFraction + (pagerState.currentPage - pageIndex)
-                }
-            }
-            val scaleFactor = 1f - (abs(pageOffset) * 0.2f).coerceIn(0f, 0.2f)
-            val imageSize by animateFloatAsState(
-                targetValue = scaleFactor,
-                label = "carousel_size_animation"
-            )
-            val book = uiState.books[pageIndex]
-            HeaderCarouselCard(
-                imageUrl = book.coverUrl,
-                bookName = book.name,
-                author = book.author,
-                modifier = Modifier
-                    .graphicsLayer {
-                        scaleX = imageSize
-                        scaleY = imageSize
+                .background(Color.Black)
+                .align(Alignment.TopCenter)
+        ) {
+            TopAppBar(
+                title = { /*TODO*/ },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    navigationIconContentColor = Color.White,
+                    titleContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                ),
+                navigationIcon = {
+                    IconButton(
+                        onClick = navigateBack,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Icons.Default.ArrowBack
                     }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
             )
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier,
+                contentPadding = PaddingValues(horizontal = pagerHorizontalPadding),
+                pageSpacing = 8.dp,
+                pageSize = PageSize.Fixed(pageSize = 200.dp),
+            ) { pageIndex ->
+                val pageOffset by remember {
+                    derivedStateOf {
+                        pagerState.currentPageOffsetFraction + (pagerState.currentPage - pageIndex)
+                    }
+                }
+                val scaleFactor = 1f - (abs(pageOffset) * 0.2f).coerceIn(0f, 0.2f)
+                val imageSize by animateFloatAsState(
+                    targetValue = scaleFactor,
+                    label = "carousel_size_animation"
+                )
+                val book = books[pageIndex]
+                HeaderCarouselCard(
+                    imageUrl = book.coverUrl,
+                    bookName = book.name,
+                    author = book.author,
+                    modifier = Modifier
+                        .graphicsLayer {
+                            scaleX = imageSize
+                            scaleY = imageSize
+                        }
+                )
+            }
         }
         BottomSheetScaffold(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .align(Alignment.BottomCenter),
             scaffoldState = sheetState,
             sheetDragHandle = null,
             sheetPeekHeight = bottomSheetHeight,
+            sheetSwipeEnabled = true,
             sheetContent = {
                 Row {
                     listOf(
@@ -160,16 +197,14 @@ fun DetailsScreen(
                     Text(text = "Summary")
                     Text(
                         text = item.summary,
-                        maxLines = 5,
-                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 BaseHorizontalDivider(color = Grey)
                 HorizontalCarousel(
                     title = "You will also like",
-                    books = uiState.likedBooks,
+                    books = likedBooks,
                     onCardClick = { bookId ->
-                        coroutine.launch {
+                        scope.launch {
                             pagerState.scrollToPage(bookId)
                         }
                     }
