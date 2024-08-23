@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetTopBannerStreamUseCase @Inject constructor(
     private val configServiceApi: ConfigServiceAPI
 ) {
+    // TODO: to add try catch
     operator fun invoke(): Flow<List<TopBannerSlide>> =
         configServiceApi.config.map { config ->
             config.topBannerSlides

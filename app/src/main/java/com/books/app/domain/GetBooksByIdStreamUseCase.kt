@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetBooksByIdStreamUseCase @Inject constructor(
     private val configServiceApi: ConfigServiceAPI
 ) {
+    // TODO: to add try catch
     operator fun invoke(bookId: Int): Flow<List<Book>> =
         configServiceApi.config.map { config ->
             val allBooks = config.books

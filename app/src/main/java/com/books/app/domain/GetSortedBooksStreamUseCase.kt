@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetSortedBooksStreamUseCase @Inject constructor(
     private val configServiceApi: ConfigServiceAPI
 ) {
+    // TODO: to add try catch
     operator fun invoke(): Flow<Map<String, List<Book>>> =
         configServiceApi.config.map { config ->
             config.books

@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetLikedBooksStreamUseCase @Inject constructor(
     private val configServiceApi: ConfigServiceAPI
 ) {
+    // TODO: to add try catch
     operator fun invoke(): Flow<List<Book>> =
         configServiceApi.config.map { config ->
             config.youWillLikeSection.mapNotNull { bookId ->
