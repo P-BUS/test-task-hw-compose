@@ -48,7 +48,7 @@ import com.books.app.presentation.theme.Grey
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-@OptIn(ExperimentalMaterial3Api::class)
+// TODO: to make it according to design and clean the structure of composables
 @Composable
 fun DetailsScreen(
     viewModel: DetailsViewModel,

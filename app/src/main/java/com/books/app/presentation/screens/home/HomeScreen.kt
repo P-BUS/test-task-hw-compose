@@ -34,6 +34,7 @@ import kotlinx.coroutines.delay
 
 private const val DELAY_TIME = 3000L
 
+// TODO: to make it according to design and clean the structure of composables
 @Composable
 fun HomeScreen(
     navigateToDetails: (Int) -> Unit,
